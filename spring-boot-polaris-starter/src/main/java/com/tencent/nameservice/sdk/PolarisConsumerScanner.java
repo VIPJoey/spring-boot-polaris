@@ -29,7 +29,7 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
  */
 public class PolarisConsumerScanner extends ClassPathBeanDefinitionScanner {
 
-    private Class annotationClass;
+    private Class<? extends Annotation> annotationClass;
 
     /**
      * Create a new {@code ClassPathBeanDefinitionScanner} for the given bean factory.

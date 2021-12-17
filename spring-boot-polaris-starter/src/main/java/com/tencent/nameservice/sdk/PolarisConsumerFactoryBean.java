@@ -11,13 +11,11 @@
 package com.tencent.nameservice.sdk;
 
 import com.tencent.nameservice.sdk.PolarisProperties.ConsumerProperties;
-import com.tencent.polaris.api.core.ConsumerAPI;
-import com.tencent.polaris.api.exception.PolarisException;
-import com.tencent.polaris.factory.api.APIFactory;
-import com.tencent.polaris.factory.config.ConfigurationImpl;
 import feign.Feign;
+import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
+import java.util.List;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.FactoryBean;
@@ -34,26 +32,11 @@ import org.springframework.util.StringUtils;
 @Slf4j
 public class PolarisConsumerFactoryBean<T> implements FactoryBean {
 
-    static {
-
-        ConfigurationImpl configuration = new ConfigurationImpl();
-        configuration.setDefault(); //使用默认配置
-        ConsumerAPI consumer = null;
-        try {
-            consumer = APIFactory.createConsumerAPIByConfig(configuration);
-            Runtime.getRuntime().addShutdownHook(new Thread(consumer::destroy));
-
-            ConsumerAPIHolder.hold(consumer);
-
-        } catch (PolarisException e) {
-
-            log.error("Init ConsumerAPI error", e);
-        }
-
-    }
-
     @Resource
     private PolarisProperties polarisProperties;
+
+    @Resource
+    private List<RequestInterceptor> interceptorList;
 
     private Class<?> mapperClass;
 
@@ -95,6 +78,7 @@ public class PolarisConsumerFactoryBean<T> implements FactoryBean {
         return Feign.builder()
                 .encoder(new GsonEncoder())
                 .decoder(new GsonDecoder())
+                .requestInterceptors(interceptorList)
                 .target(PolarisTarget.create(mapperClass, properties));
     }
 }

@@ -14,6 +14,7 @@ import com.tencent.nameservice.sdk.common.model.Book;
 import com.tencent.nameservice.sdk.common.model.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,9 +29,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
 
     @RequestMapping("/book/{id}")
-    public R<Book> getBook(@PathVariable("id") String id) {
+    public R<Book> getBook(@PathVariable("id") String id, @RequestHeader("X-SHA-TOKEN") String token) {
 
-        log.info("Get book by id {}", id);
+        log.info("Get book by id {} {}", id, token);
 
         return R.ok(new Book().setId(id));
     }

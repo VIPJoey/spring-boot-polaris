@@ -11,7 +11,6 @@
 package com.tencent.nameservice.sdk;
 
 import com.tencent.nameservice.sdk.PolarisProperties.ConsumerProperties;
-import com.tencent.polaris.api.core.ConsumerAPI;
 import com.tencent.polaris.api.exception.PolarisException;
 import com.tencent.polaris.api.pojo.Instance;
 import com.tencent.polaris.api.rpc.GetOneInstanceRequest;
@@ -31,12 +30,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PolarisTarget<T> implements Target<T> {
 
-    private ConsumerAPI consumerAPI;
     private final Class<T> clazz;
     private final ConsumerProperties consumerProperties;
 
     private PolarisTarget(Class<T> clazz, ConsumerProperties consumerProperties) {
-        this.consumerAPI = ConsumerAPIHolder.get();
         this.clazz = clazz;
         this.consumerProperties = consumerProperties;
     }
@@ -90,7 +87,7 @@ public class PolarisTarget<T> implements Target<T> {
         GetOneInstanceRequest getInstancesRequest = new GetOneInstanceRequest();
         getInstancesRequest.setNamespace(consumerProperties.getNamespace());
         getInstancesRequest.setService(consumerProperties.getService());
-        InstancesResponse instances = consumerAPI.getOneInstance(getInstancesRequest);
+        InstancesResponse instances =  ConsumerAPIHolder.get().getOneInstance(getInstancesRequest);
 
         return Arrays.stream(instances.getInstances()).findFirst()
                 .orElseThrow(() -> new BizException("查找北极星失败"));

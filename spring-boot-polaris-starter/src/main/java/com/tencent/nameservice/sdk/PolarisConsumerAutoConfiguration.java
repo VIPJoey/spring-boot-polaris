@@ -15,7 +15,6 @@ import com.tencent.polaris.api.exception.PolarisException;
 import com.tencent.polaris.factory.api.APIFactory;
 import com.tencent.polaris.factory.config.ConfigurationImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -41,5 +40,19 @@ public class PolarisConsumerAutoConfiguration {
 
     }
 
+    /**
+     * 消费.
+     */
+    @Bean
+    public ConsumerAPI consumerAPI() throws PolarisException {
 
+        ConfigurationImpl configuration = new ConfigurationImpl();
+        configuration.setDefault(); //使用默认配置
+        ConsumerAPI consumer = APIFactory.createConsumerAPIByConfig(configuration);
+        Runtime.getRuntime().addShutdownHook(new Thread(consumer::destroy));
+
+        ConsumerAPIHolder.hold(consumer);
+
+        return consumer;
+    }
 }
