@@ -14,6 +14,7 @@ import com.tencent.polaris.api.core.ConsumerAPI;
 import com.tencent.polaris.api.exception.PolarisException;
 import com.tencent.polaris.factory.api.APIFactory;
 import com.tencent.polaris.factory.config.ConfigurationImpl;
+import feign.RequestInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -44,6 +45,7 @@ public class PolarisConsumerAutoConfiguration {
      * 消费.
      */
     @Bean
+    @ConditionalOnMissingBean
     public ConsumerAPI consumerAPI() throws PolarisException {
 
         ConfigurationImpl configuration = new ConfigurationImpl();
@@ -54,5 +56,16 @@ public class PolarisConsumerAutoConfiguration {
         ConsumerAPIHolder.hold(consumer);
 
         return consumer;
+    }
+
+    /**
+     * 默认请求拦截器.
+     */
+    @ConditionalOnMissingBean
+    @Bean("defaultRequestInterceptor")
+    public RequestInterceptor defaultRequestInterceptor() {
+        return template -> {
+            // empty
+        };
     }
 }
