@@ -7,7 +7,7 @@
     <groupId>com.tencent.nameservice</groupId>
     <artifactId>spring-boot-polaris</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <name>spring-boot-polaris</name>
 

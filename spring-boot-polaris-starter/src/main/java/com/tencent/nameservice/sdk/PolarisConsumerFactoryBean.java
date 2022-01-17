@@ -15,9 +15,14 @@ import feign.Feign;
 import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
@@ -36,7 +41,7 @@ public class PolarisConsumerFactoryBean<T> implements FactoryBean {
     private PolarisProperties polarisProperties;
 
     @Resource
-    private List<RequestInterceptor> interceptorList;
+    private Map<String, RequestInterceptor> interceptorMap;
 
     private Class<?> mapperClass;
 
@@ -75,10 +80,26 @@ public class PolarisConsumerFactoryBean<T> implements FactoryBean {
             properties.setVersion(version);
         }
 
+        // interceptors
+        List<RequestInterceptor> interceptors;
+
+        if (CollectionUtils.isNotEmpty(properties.getInterceptors())) {
+
+            // Extract interceptor by name if specified
+            interceptors = properties.getInterceptors().stream()
+                    .map(x -> interceptorMap.get(x))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        } else {
+
+            // Use all interceptors
+            interceptors = new ArrayList<>(interceptorMap.values());
+        }
+
         return Feign.builder()
                 .encoder(new GsonEncoder())
                 .decoder(new GsonDecoder())
-                .requestInterceptors(interceptorList)
+                .requestInterceptors(interceptors)
                 .target(PolarisTarget.create(mapperClass, properties));
     }
 }

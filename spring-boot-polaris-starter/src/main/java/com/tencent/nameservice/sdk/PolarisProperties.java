@@ -11,6 +11,7 @@
 package com.tencent.nameservice.sdk;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -97,6 +98,10 @@ public class PolarisProperties {
          * pecify the version number registered to the Polaris service.
          */
         private String version;
+        /**
+         * Specify a list of interceptor names.
+         */
+        private List<String> interceptors;
     }
 
 }

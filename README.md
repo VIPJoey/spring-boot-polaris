@@ -1,5 +1,5 @@
 
-# spring-boot-polaris 发布 [V1.1.0]
+# spring-boot-polaris 发布 [V1.1.1]
 
 SpringBoot 更加优雅地整合北极星SDK.
 
@@ -108,7 +108,7 @@ public class DemoService {
 1、增加消费端请求拦截器，例如增加token参数
 ```java
 @Slf4j
-@Component
+@Component("tokenInterceptor") 
 public class TokenInterceptor implements RequestInterceptor {
 
 
@@ -129,6 +129,7 @@ public class TokenInterceptor implements RequestInterceptor {
 
 ## 三、版本变更记录
 
+* 20220114 v1.1.0 增加通过名称指定消费端请求拦截器
 * 20211217 v1.1.0 增加消费端请求拦截器
 * 20211121 v1.0.0 发布
 
